@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-BR" lang="pt-BR" dir="ltr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>WebSocket</title>
+
+		<style>
+			html,body{font:normal 0.9em arial,helvetica,sans-serif;}
+			#show-wrapp {
+				width: 100%;
+				height:234px;
+				border:1px solid #7F9DB9;
+				border-bottom: none;
+				overflow: auto;
+				background-color: #E0E0E0;
+				box-sizing: border-box;
+			}
+			#show-wrapp:before,
+			#show-wrapp:after {
+				content: '';
+				width: 0%;
+				height: 100%;
+				background-color: #090;
+				vertical-align: bottom;
+				display: inline-block;
+			}
+			#show {
+				width: 100%;
+				vertical-align: bottom;
+				display: inline-block;
+			}
+			#show div {
+				background: #fff;
+				padding: 2px;
+				margin: 2px;
+			}
+			#msg {
+				/*width:436px;*/
+				width: 100%;
+				padding: 4px 2px 2px;
+				border: 1px solid #7F9DB9;
+				border-top-color: transparent;
+				display: block;
+				box-sizing: border-box;
+			}
+			#msg:focus {
+				border-top-color: #aaa;
+			}
+			section {
+				max-width: 440px;
+				margin: auto;
+			}
+		</style>
+	</head>
+
+
+	<body>
+		<section>
+			<h1>Simple WebSocket Client</h1>
+			<div id="show-wrapp"><div id="show"></div></div>
+			<input id="msg" type="textbox" onkeypress="onkey(event)"/>
+		</section>
+
+
+		<script type="text/javascript">
+			var socket;
+
+			function init(){
+				var host = "ws://localhost:12345";
+				try{
+					socket = new WebSocket(host);
+					show('WebSocket - status '+socket.readyState);
+					socket.onopen    = function(msg){ show("Welcome - status "+this.readyState); };
+					socket.onmessage = function(msg){ show(msg.data); };
+					socket.onclose   = function(msg){ show("Disconnected - status "+this.readyState); };
+				}
+				catch (ex)
+				{
+					show(ex);
+				}
+				$("msg").focus();
+			}
+			init();
+
+			function send(){
+				var txt,msg;
+				txt = $("msg");
+				msg = txt.value;
+				if(!msg){ alert("Message can not be empty"); return; }
+				txt.value="";
+				txt.focus();
+				try{
+					socket.send(msg);
+				}
+				catch(ex)
+				{
+					log(ex);
+				}
+			}
+			function quit(){
+				log("Goodbye!");
+				socket.close();
+				socket=null;
+			}
+
+			var contador_mensagens = 0;
+
+			function $(id) {
+				return document.getElementById(id); 
+			}
+			function show(msg){
+				$("show").innerHTML += "<div>"+msg+"</div>";
+				atualiza_contador();
+				atualiza_campo_de_texto();
+			}
+			function onkey(event) {
+				if ( event.keyCode == 13 )
+				{
+					send();
+				}
+			}
+			function atualiza_contador() {
+				contador_mensagens++;
+			}
+			function atualiza_campo_de_texto() {
+				$("show-wrapp").scrollTo(0,$('show').clientHeight);
+			}
+
+		</script>
+	</body>
+</html>
