@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 set_time_limit(0);
 ob_implicit_flush();
 
-$master  = WebSocket("localhost",12345);
+$master  = WebSocket("localhost",8888);
 $sockets = array($master);
 $users   = array();
 $debug   = TRUE;

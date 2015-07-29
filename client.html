@@ -29,33 +29,47 @@
 				vertical-align: bottom;
 				display: inline-block;
 			}
-			#show div {
+			#show > div {
 				background: #fff;
 				padding: 2px;
 				margin: 2px;
 			}
 			#msg {
-				/*width:436px;*/
 				width: 100%;
 				padding: 4px 2px 2px;
 				border: 1px solid #7F9DB9;
-				border-top-color: transparent;
 				display: block;
 				box-sizing: border-box;
-			}
-			#msg:focus {
-				border-top-color: #aaa;
 			}
 			section {
 				max-width: 440px;
 				margin: auto;
+			}
+
+			.user-nome,
+			.user-message {
+				display: inline-block;
+				box-sizing: border-box;
+				padding: 0 3px;
+			}
+			.user-nome {
+				width: 60px;
+				text-align: right;
+			}
+			.user-message {
+				max-width: 360px;
+				border-left: 1px dotted #7F9DB9;
 			}
 		</style>
 	</head>
 
 
 	<body>
-		<section>
+		<section id="login">
+			<h1>Simple WebSocket Client</h1>
+			<input id="nome" placeholder="Seu nome" /><button type="button" id="conectar">Conectar</button>
+		</section>
+		<section id="chat" style="display:none;">
 			<h1>Simple WebSocket Client</h1>
 			<div id="show-wrapp"><div id="show"></div></div>
 			<input id="msg" type="textbox" onkeypress="onkey(event)"/>
@@ -66,31 +80,32 @@
 			var socket;
 
 			function init(){
-				var host = "ws://localhost:12345";
+				var host = "ws://localhost:8888";
 				try{
 					socket = new WebSocket(host);
-					show('WebSocket - status '+socket.readyState);
-					socket.onopen    = function(msg){ show("Welcome - status "+this.readyState); };
-					socket.onmessage = function(msg){ show(msg.data); };
-					socket.onclose   = function(msg){ show("Disconnected - status "+this.readyState); };
+					show({nome : 'Status', msg : 'Conectando'/*socket.readyState*/});
+					socket.onmessage = function(msg){ show(JSON.parse(msg.data)); };
+					socket.onopen    = function(msg){ show({nome : "Status", msg : 'Conectado'/* + this.readyState*/}); };
+					socket.onclose   = function(msg){ show({nome : "Status", msg : 'Desconectado'/* + this.readyState*/}); };
 				}
 				catch (ex)
 				{
-					show(ex);
+					show({nome : "Error", msg : ex});
 				}
 				$("msg").focus();
 			}
-			init();
 
 			function send(){
 				var txt,msg;
 				txt = $("msg");
 				msg = txt.value;
 				if(!msg){ alert("Message can not be empty"); return; }
+				usuario.msg = msg;
 				txt.value="";
 				txt.focus();
-				try{
-					socket.send(msg);
+				try
+				{
+					socket.send(JSON.stringify(usuario));
 				}
 				catch(ex)
 				{
@@ -109,7 +124,11 @@
 				return document.getElementById(id); 
 			}
 			function show(msg){
-				$("show").innerHTML += "<div>"+msg+"</div>";
+				var html  = '<div class="user-nome">'+msg.nome+'</div>';
+					html += '<div class="user-message">'+msg.msg+'</div>';
+
+				$("show").innerHTML += '<div>'+html+'</div>';
+
 				atualiza_contador();
 				atualiza_campo_de_texto();
 			}
@@ -123,7 +142,19 @@
 				contador_mensagens++;
 			}
 			function atualiza_campo_de_texto() {
-				$("show-wrapp").scrollTo(0,$('show').clientHeight);
+				$("show-wrapp").scrollTop = $('show').scrollHeight;
+			}
+
+			$('conectar').onclick = function () {
+				usuario.nome = $('nome').value;
+				init();
+				$('login').style.display = 'none';
+				$('chat').style.display = 'block';
+			}
+
+			var usuario = {
+				nome : '',
+				msg  : ''
 			}
 
 		</script>
