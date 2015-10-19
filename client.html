@@ -3,160 +3,27 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>WebSocket</title>
-
-		<style>
-			html,body{font:normal 0.9em arial,helvetica,sans-serif;}
-			#show-wrapp {
-				width: 100%;
-				height:234px;
-				border:1px solid #7F9DB9;
-				border-bottom: none;
-				overflow: auto;
-				background-color: #E0E0E0;
-				box-sizing: border-box;
-			}
-			#show-wrapp:before,
-			#show-wrapp:after {
-				content: '';
-				width: 0%;
-				height: 100%;
-				background-color: #090;
-				vertical-align: bottom;
-				display: inline-block;
-			}
-			#show {
-				width: 100%;
-				vertical-align: bottom;
-				display: inline-block;
-			}
-			#show > div {
-				background: #fff;
-				padding: 2px;
-				margin: 2px;
-			}
-			#msg {
-				width: 100%;
-				padding: 4px 2px 2px;
-				border: 1px solid #7F9DB9;
-				display: block;
-				box-sizing: border-box;
-			}
-			section {
-				max-width: 440px;
-				margin: auto;
-			}
-
-			.user-nome,
-			.user-message {
-				display: inline-block;
-				box-sizing: border-box;
-				padding: 0 3px;
-			}
-			.user-nome {
-				width: 60px;
-				text-align: right;
-			}
-			.user-message {
-				max-width: 360px;
-				border-left: 1px dotted #7F9DB9;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="estilo.css" />
 	</head>
 
 
 	<body>
 		<section id="login">
 			<h1>Simple WebSocket Client</h1>
-			<input id="nome" placeholder="Seu nome" /><button type="button" id="conectar">Conectar</button>
+			<form method="post" action="http://192.168.0.4:8080/auth.php" charset="UTF-8" name="authForm">
+				<div><input id="user" name="user" placeholder="Usuário" type="text" /></div>
+				<div><input id="pass" name="pass" placeholder="Senha" type="password" /></div>
+				<div><button type="submit" id="conectar">Conectar</button></div>
+			</form>
 		</section>
+
 		<section id="chat" style="display:none;">
 			<h1>Simple WebSocket Client</h1>
 			<div id="show-wrapp"><div id="show"></div></div>
-			<input id="msg" type="textbox" onkeypress="onkey(event)"/>
+			<input id="msg" type="textbox" />
+			<button id="recarregar">Reload</button>
 		</section>
 
-
-		<script type="text/javascript">
-			var socket;
-
-			function init(){
-				var host = "ws://localhost:8888";
-				try{
-					socket = new WebSocket(host);
-					show({nome : 'Status', msg : 'Conectando'/*socket.readyState*/});
-					socket.onmessage = function(msg){ show(JSON.parse(msg.data)); };
-					socket.onopen    = function(msg){ show({nome : "Status", msg : 'Conectado'/* + this.readyState*/}); };
-					socket.onclose   = function(msg){ show({nome : "Status", msg : 'Desconectado'/* + this.readyState*/}); };
-				}
-				catch (ex)
-				{
-					show({nome : "Error", msg : ex});
-				}
-				$("msg").focus();
-			}
-
-			function send(){
-				var txt,msg;
-				txt = $("msg");
-				msg = txt.value;
-				if(!msg){ alert("Message can not be empty"); return; }
-				usuario.msg = msg;
-				txt.value="";
-				txt.focus();
-				try
-				{
-					socket.send(JSON.stringify(usuario));
-				}
-				catch(ex)
-				{
-					log(ex);
-				}
-			}
-			function quit(){
-				log("Goodbye!");
-				socket.close();
-				socket=null;
-			}
-
-			var contador_mensagens = 0;
-
-			function $(id) {
-				return document.getElementById(id); 
-			}
-			function show(msg){
-				var html  = '<div class="user-nome">'+msg.nome+'</div>';
-					html += '<div class="user-message">'+msg.msg+'</div>';
-
-				$("show").innerHTML += '<div>'+html+'</div>';
-
-				atualiza_contador();
-				atualiza_campo_de_texto();
-			}
-			function onkey(event) {
-				if ( event.keyCode == 13 )
-				{
-					send();
-				}
-			}
-			function atualiza_contador() {
-				contador_mensagens++;
-			}
-			function atualiza_campo_de_texto() {
-				$("show-wrapp").scrollTop = $('show').scrollHeight;
-			}
-
-			$('conectar').onclick = function () {
-				usuario.nome = $('nome').value;
-				init();
-				$('login').style.display = 'none';
-				$('chat').style.display = 'block';
-			}
-
-			var usuario = {
-				nome : '',
-				msg  : ''
-			}
-
-		</script>
+		<script type="text/javascript" src="script.js"></script>
 	</body>
 </html>

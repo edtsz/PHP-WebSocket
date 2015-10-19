@@ -1,13 +1,14 @@
 <?php  /*  >php -q server.php  */
 
-error_reporting(E_ALL);
+include 'common.php';
+
 set_time_limit(0);
 ob_implicit_flush();
 
-$master  = WebSocket("localhost",8888);
-$sockets = array($master);
+$master  = WebSocket("192.168.0.4",8888);
+$sockets = array(-1 => $master);
 $users   = array();
-$debug   = TRUE;
+$debug   = FALSE;
 
 
 while( TRUE ) {
@@ -58,13 +59,22 @@ while( TRUE ) {
 //---------------------------------------------------------------
 function process( $user, $msg )
 {
-	send(get_users(), unwrap($msg));
+	send(get_users(), unwrap($msg), $user);
 }
 
 
-function send( $client, $msg )
+function send( $client, $msg, $user )
 {
-	say('$: '.$msg);
+	if ( strlen($msg) == 0 )
+	{
+		disconnect( $user->socket );
+		return;
+	}
+
+	$msg = '{"nome":"' . $user->name . '", "msg":"' . $msg . '"}';
+
+	say('$: ' . $user->id . ' | ' . $msg);
+
 	$msg = wrap($msg);
 	if ( is_array($client) )
 	{
@@ -95,41 +105,29 @@ function connect( $socket )
 	global $sockets, $users;
 
 	$user = new User();
-	$user->id     = uniqid();
 	$user->socket = $socket;
+
 	array_push($users, $user);
 	array_push($sockets, $socket);
 	console($socket." CONNECTED!");
-
-	// console(print_r($users,1));
 }
 
 
 function disconnect( $socket )
 {
 	global $sockets, $users;
-	$found = NULL;
-	$n = count($users);
-	for( $i = 0; $i < $n; $i++ )
-	{
-		if( $users[$i]->socket == $socket )
-		{
-			$found = $i;
-			break;
-		}
-	}
 
-	if( ! is_null($found) )
-	{
-		array_splice($users, $found, 1);
-	}
-	$index = array_search($socket, $sockets);
+	$connection_id = array_search($socket, $sockets);
+
+	$user = $users[$connection_id];
+
+	unset($sockets[$connection_id]);
+	unset($users[$connection_id]);
+
 	socket_close($socket);
-	console($socket." DISCONNECTED!");
-	if( $index >= 0 )
-	{
-		array_splice($sockets, $index, 1);
-	}
+	console($socket . " DISCONNECTED!");
+
+	update_usuario_by_id($user->id);
 }
 
 
@@ -138,17 +136,26 @@ function dohandshake( $user, $buffer )
 	console("\nRequesting handshake...");
 	console($buffer);
 	list($resource, $host, $origin, $key) = getheaders($buffer);
-	console("Handshaking...");
+
+	$_GET = parse_get_header($resource);
+
+	console("Start handshaking...");
 
 	$upgrade =
 		"HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
 		"Upgrade: WebSocket\r\n" .
 		"Connection: Upgrade\r\n" .
-		"Sec-WebSocket-Accept: ".base64_encode(sha1($key."258EAFA5-E914-47DA-95CA-C5AB0DC85B11", TRUE))."\r\n".
+		"Sec-WebSocket-Accept: " . base64_encode(sha1($key."258EAFA5-E914-47DA-95CA-C5AB0DC85B11", TRUE))."\r\n".
 		"\r\n";
 	socket_write($user->socket, $upgrade);
 
+	$query = get_usuario_by_id($_GET['token']);
+
+	$user->id        = $_GET['token'];
+	$user->name      = $query['nick'];
 	$user->handshake = TRUE;
+
+	update_usuario_to_online($_GET['token']);
 
 	console($upgrade);
 	console("Done handshaking...");
@@ -185,14 +192,13 @@ function getuserbysocket( $socket )
 {
 	global $users;
 
-	$found = NULL;
+	$found = array();
 
 	foreach( $users as $user )
 	{
 		if( $user->socket == $socket )
 		{
-			$found=$user;
-			break;
+			return $user;
 		}
 	}
 	return $found;
@@ -201,7 +207,7 @@ function getuserbysocket( $socket )
 
 function  say( $msg = "" )
 {
-	echo $msg."\n";
+	echo print_r( $msg , 1) , PHP_EOL;
 }
 
 
@@ -293,8 +299,23 @@ function console( $msg = "" )
 
 	if ( $debug )
 	{
-		echo $msg."\n";
+		echo print_r($msg,1)."\n";
 	}
+}
+
+
+function parse_get_header($header) {
+	$resource = parse_url($header);
+
+	$get = explode('&',$resource['query']);
+	$_GET = array();
+	foreach ($get as $each)
+	{
+		$tmp = explode('=', $each);
+		$_GET[$tmp[0]] = $tmp[1];
+	}
+
+	return $_GET;
 }
 
 
@@ -302,4 +323,6 @@ class User {
 	var $id;
 	var $socket;
 	var $handshake;
+
+	var $name;
 }
