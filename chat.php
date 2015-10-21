@@ -128,6 +128,8 @@ function disconnect( $socket )
 	console($socket . " DISCONNECTED!");
 
 	update_usuario_by_id($user->id);
+
+	send(get_users(), 'saiu da sala', $user);
 }
 
 
@@ -159,6 +161,8 @@ function dohandshake( $user, $buffer )
 
 	console($upgrade);
 	console("Done handshaking...");
+
+	send(get_users(), 'entrou da sala', $user);
 
 	return TRUE;
 }
