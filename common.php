@@ -93,3 +93,24 @@ function update_usuario_to_online( $id = '' )
 
 	file_put_contents(__DIR__ . '/users.json', json_encode($usuarios));
 }
+
+
+/**
+ * Atualiza o ID do usuário
+ *
+ * @author  Éderson T. Szlachta
+ * @access  public
+ * @param   string  $id       id do USUÁRIO
+ * @return  void
+ */
+function update_usuario_to_offline( $id = '' )
+{
+	$usuarios = json_decode(file_get_contents(__DIR__ . '/users.json'), TRUE);
+
+	// if ( ! in_array($id, $usuarios) )
+	// 	return;
+
+	$usuarios[$id]['online'] = FALSE;
+
+	file_put_contents(__DIR__ . '/users.json', json_encode($usuarios));
+}

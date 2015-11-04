@@ -8,22 +8,21 @@
 
 
 	<body>
-		<section id="login">
-			<h1>Simple WebSocket Client</h1>
-			<form method="post" action="http://192.168.0.4:8080/auth.php" charset="UTF-8" name="authForm">
+		<section id="login"><!-- 
+			 --><form method="post" action="http://localhost:8080/auth.php" charset="UTF-8" name="authForm">
 				<div><input id="user" name="user" placeholder="Usuário" type="text" /></div>
 				<div><input id="pass" name="pass" placeholder="Senha" type="password" /></div>
 				<div><button type="submit" id="conectar">Conectar</button></div>
-			</form>
-		</section>
+			</form><!-- 
+		 --></section>
 
 		<section id="chat" style="display:none;">
-			<h1>Simple WebSocket Client</h1>
 			<div id="show-wrapp"><div id="show"></div></div>
 			<input id="msg" type="textbox" />
 			<button id="recarregar">Reload</button>
 		</section>
 
+		<script type="text/javascript" src="jquery.js"></script>
 		<script type="text/javascript" src="script.js"></script>
 	</body>
 </html>

@@ -1,12 +1,15 @@
-html,body{font:normal 0.9em arial,helvetica,sans-serif;}
+html,body{font:normal 0.9em arial,helvetica,sans-serif;height:100%;margin:0;}
+.bloco {
+	display: inline-block;
+}
 #show-wrapp {
-	width: 100%;
-	height:234px;
+	height:100%;
 	border:1px solid #7F9DB9;
-	border-bottom: none;
 	overflow: auto;
 	background-color: #E0E0E0;
 	box-sizing: border-box;
+	border-bottom-width: 30px;
+	margin-bottom: -30px;
 }
 #show-wrapp:before,
 #show-wrapp:after {
@@ -21,35 +24,70 @@ html,body{font:normal 0.9em arial,helvetica,sans-serif;}
 	width: 100%;
 	vertical-align: bottom;
 	display: inline-block;
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 2px;
 }
-#show > div {
-	background: #fff;
-	padding: 2px;
-	margin: 2px;
-}
+	#show td {
+		background: #fff;
+		padding: 2px;
+	}
+
 #msg {
 	width: 100%;
-	padding: 4px 2px 2px;
-	border: 1px solid #7F9DB9;
 	display: block;
-	box-sizing: border-box;
+	border-width: 1px 0px;
+	border-color: #7F9DB9;
+	border-style: solid;
+	padding: 4px 0px;
+	text-indent: 10px;
+}
+#recarregar {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	border-radius: 0px;
+	color: #FFF;
+	background-color: #7F9DB9;
+	padding: 3px 5px;
+	border: 1px solid #7F9DB9;
+	cursor: pointer;
+}
+#recarregar:hover {
+	background-color: #31577B;
 }
 section {
-	max-width: 440px;
 	margin: auto;
+	height: 100%;
+}
+#login:before,
+#login:after {
+	content: '';
+	width: 0%;
+	height: 100%;
+	background-color: #090;
+	vertical-align: middle;
+	display: inline-block;
+}
+#login form {
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	vertical-align: middle;
 }
 
-.user-nome,
-.user-message {
-	display: inline-block;
-	box-sizing: border-box;
-	padding: 0 3px;
+.ln-0, .ln-1 {
+	border-top: 1px solid #E0E0E0;
+	border-bottom: 1px solid #E0E0E0;
+	background-color: #fff;
 }
 .user-nome {
-	width: 60px;
+	width: 120px;
 	text-align: right;
+	border-right: 2px solid #E0E0E0;
+	padding-right: 2px;
+	height: 100%;
 }
 .user-message {
-	max-width: 360px;
-	border-left: 1px dotted #7F9DB9;
+	padding-left: 2px;
 }
