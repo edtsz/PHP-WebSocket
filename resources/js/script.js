@@ -21,7 +21,7 @@ function send(){
 			msg = txt.value;
 
 	if( !msg ){
-		alert("Message can not be empty");
+		// alert("Message can not be empty");
 		return;
 	}
 
