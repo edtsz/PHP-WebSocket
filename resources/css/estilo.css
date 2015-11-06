@@ -1,45 +1,43 @@
 html,body{font:normal 0.9em arial,helvetica,sans-serif;height:100%;margin:0;}
 .bloco {
 	display: inline-block;
+	vertical-align: top;
 }
+#clients,
 #show-wrapp {
 	height:100%;
-	border:1px solid #7F9DB9;
 	overflow: auto;
 	background-color: #E0E0E0;
-	box-sizing: border-box;
-	border-bottom-width: 30px;
-	margin-bottom: -30px;
+}
+#clients {
+	width:30%;
+}
+#show-wrapp {
+	width:70%;
+}
+.alinhamento-vertical,
+#show-wrapp:before {
+	vertical-align: bottom;
+	display: inline-block;
 }
 #show-wrapp:before,
 #show-wrapp:after {
 	content: '';
 	width: 0%;
-	height: 100%;
-	background-color: #090;
-	vertical-align: bottom;
-	display: inline-block;
+	height: 99.9999%;
 }
-#show {
+.alinhamento-vertical {
 	width: 100%;
-	vertical-align: bottom;
-	display: inline-block;
-	width: 100%;
-	border-collapse: separate;
-	border-spacing: 2px;
 }
-	#show td {
-		background: #fff;
-		padding: 2px;
-	}
+
 
 #msg {
 	width: 100%;
-	display: block;
-	border-width: 1px 0px;
+	display: inline-block;
+	border-width: 1px 0px 0;
 	border-color: #7F9DB9;
 	border-style: solid;
-	padding: 4px 0px;
+	padding: 3px 0px;
 	text-indent: 10px;
 }
 #recarregar {
