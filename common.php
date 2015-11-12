@@ -16,8 +16,8 @@ function get_usuario_by_id( $id = '' )
 {
 	$usuarios = json_decode(file_get_contents(__DIR__ . '/users.json'), TRUE);
 
-	if ( ! in_array($id, $usuarios) )
-		return array();
+	if ( ! array_key_exists($id, $usuarios) )
+		return FALSE;
 
 	return $usuarios[$id];
 }
@@ -63,8 +63,8 @@ function update_usuario_by_id( $id = '' )
 {
 	$usuarios = json_decode(file_get_contents(__DIR__ . '/users.json'), TRUE);
 
-	if ( ! in_array($id, $usuarios) )
-		return;
+	if ( ! array_key_exists($id, $usuarios) )
+		return FALSE;
 
 	$usuario = $usuarios[$id];
 	unset($usuarios[$id]);
@@ -89,8 +89,8 @@ function update_usuario_to_online( $id = '' )
 {
 	$usuarios = json_decode(file_get_contents(__DIR__ . '/users.json'), TRUE);
 
-	if ( ! in_array($id, $usuarios) )
-		return;
+	if ( ! array_key_exists($id, $usuarios) )
+		return FALSE;
 
 	$usuarios[$id]['online'] = TRUE;
 
@@ -110,8 +110,8 @@ function update_usuario_to_offline( $id = '' )
 {
 	$usuarios = json_decode(file_get_contents(__DIR__ . '/users.json'), TRUE);
 
-	if ( ! in_array($id, $usuarios) )
-		return;
+	if ( ! array_key_exists($id, $usuarios) )
+		return FALSE;
 
 	$usuarios[$id]['online'] = FALSE;
 

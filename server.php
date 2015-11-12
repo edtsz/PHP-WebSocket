@@ -20,7 +20,13 @@ class echoServer extends WebSocketServer
 	protected function connected ($user)
 	{
 		$header = $this->parse_get_header($user->requestedResource);
+
 		$usuario = get_usuario_by_id($header['token']);
+
+		if ( ! $usuario )
+		{
+			return $this->disconnect($user->socket);
+		}
 
 		$this->users[$user->id]->nome = $usuario['nick'];
 		$this->users[$user->id]->token = $header['token'];
