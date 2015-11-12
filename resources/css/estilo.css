@@ -8,6 +8,8 @@ html,body{font:normal 0.9em arial,helvetica,sans-serif;height:100%;margin:0;}
 	height:100%;
 	overflow: auto;
 	background-color: #E0E0E0;
+	box-sizing: border-box;
+	border-bottom: 30px solid;
 }
 #clients {
 	width:30%;
@@ -34,11 +36,16 @@ html,body{font:normal 0.9em arial,helvetica,sans-serif;height:100%;margin:0;}
 #msg {
 	width: 100%;
 	display: inline-block;
-	border-width: 1px 0px 0;
-	border-color: #7F9DB9;
-	border-style: solid;
-	padding: 3px 0px;
-	text-indent: 10px;
+	border-top: 1px solid #7F9DB9;
+	padding: 3px 10px;
+
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	box-sizing: border-box;
+	border-right: 70px solid #fff;
+	height: 29px;
 }
 #recarregar {
 	position: absolute;
