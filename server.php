@@ -10,7 +10,7 @@ class echoServer extends WebSocketServer
 	{
 		$message = array(
 			'nome' => $user->nome,
-			'msg' => strip_tags($message)
+			'msg' => htmlentities($message)
 		);
 		foreach ($this->users as $currentUser) {
 			$this->send($currentUser, json_encode($message));
