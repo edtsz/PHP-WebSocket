@@ -468,19 +468,11 @@ abstract class WebSocketServer {
 			socket_write($user->socket,$reply,strlen($reply));
 			return false;
 		}
-		if (extension_loaded('mbstring')) {
-			if ($headers['length'] > mb_strlen($this->applyMask($headers,$payload))) {
-				$user->handlingPartialPacket = true;
-				$user->partialBuffer = $message;
-				return false;
-			}
-		}
-		else {
-			if ($headers['length'] > strlen($this->applyMask($headers,$payload))) {
-				$user->handlingPartialPacket = true;
-				$user->partialBuffer = $message;
-				return false;
-			}
+
+		if ($headers['length'] > strlen($this->applyMask($headers,$payload))) {
+			$user->handlingPartialPacket = true;
+			$user->partialBuffer = $message;
+			return false;
 		}
 
 		$payload = $this->applyMask($headers,$payload);
